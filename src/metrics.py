@@ -28,22 +28,19 @@ def basic_stats(data):
 def create_plots(data):
     fig, axes = plt.subplots(1, 3, figsize=(15, 4))
     
-    # Histogram
     axes[0].hist(data['systolic_bp'], bins=15, color='lightblue')
     axes[0].set_title('Blodtryck')
     axes[0].set_xlabel('mmHg')
     
-    # Boxplot
     man = data[data['sex'] == 'M']['weight']
     kvinna = data[data['sex'] == 'F']['weight']
-    axes[1].boxplot([man, kvinna], labels=['Män', 'Kvinnor'])
-    axes[1].set_title('Vikt per kön')
+    axes[1].boxplot([man, kvinna], labels=['Man', 'Kvinna'])
+    axes[1].set_title('Vikt per kon')
     axes[1].set_ylabel('kg')
     
-    # Bar chart
     rokare = data['smoker'].value_counts()
     axes[2].bar(rokare.index, rokare.values, color=['lightgreen', 'lightcoral'])
-    axes[2].set_title('Rökare')
+    axes[2].set_title('Rokare')
     
     plt.tight_layout()
     return fig
