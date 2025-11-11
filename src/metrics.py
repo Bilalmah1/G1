@@ -12,7 +12,7 @@ def ladda_data():
         print("Data laddad från CSV-fil")
         return df
     except FileNotFoundError:
-        print("")
+        
         
         np.random.seed(42)
         n = 800
