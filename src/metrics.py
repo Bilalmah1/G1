@@ -46,7 +46,7 @@ def grundstatistik(data):
     return stats_df.round(2)
 
 def skapa_grafer(data):
-    """Skapa 3 olika grafer"""
+    """Skapa 4 olika grafer"""
     fig, axes = plt.subplots(2, 2, figsize=(15, 10))
     
     # 1. Histogram över blodtryck
