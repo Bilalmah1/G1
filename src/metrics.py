@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
+
 def ladda_data():
     """Ladda data från CSV-filen eller skapa testdata"""
     try:
