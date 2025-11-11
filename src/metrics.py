@@ -99,7 +99,7 @@ def simulera_sjukdom(data):
 
 
 def konfidensintervall(data):
-    """Beräkna konfidensintervall för blodtryck"""
+    "Beräkna konfidensintervall för blodtryck"
     bp = data['systolic_bp']
     n = len(bp)
     medel = bp.mean()
