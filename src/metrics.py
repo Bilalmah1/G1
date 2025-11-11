@@ -3,16 +3,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
+
 def ladda_data():
-    """Ladda data från CSV-filen eller skapa testdata"""
+    "Ladda data från CSV-filen eller skapa testdata"
     try:
-        # Försök ladda CSV
+       
         df = pd.read_csv('health_study_dataset.csv')
         print("Data laddad från CSV-fil")
         return df
     except FileNotFoundError:
         print("CSV-fil inte hittad. Skapar testdata...")
-        # Skapa testdata som liknar originalet
+        
         np.random.seed(42)
         n = 800
         data = pd.DataFrame({
@@ -29,7 +30,7 @@ def ladda_data():
         return data
 
 def grundstatistik(data):
-    """Beräkna grundläggande statistik"""
+    "Beräkna grundläggande statistik"
     kolumner = ['age', 'weight', 'height', 'systolic_bp', 'cholesterol']
     
     stats_data = {}
@@ -46,7 +47,7 @@ def grundstatistik(data):
     return stats_df.round(2)
 
 def skapa_grafer(data):
-    """Skapa 4 olika grafer"""
+    "Skapa 4 olika grafer"
     fig, axes = plt.subplots(2, 2, figsize=(15, 10))
     
     # 1. Histogram över blodtryck
@@ -78,15 +79,27 @@ def skapa_grafer(data):
     return fig
 
 def simulera_sjukdom(data):
-    """Simulera sjukdomsförekomst"""
+    "Simulera sjukdomsförekomst - FIXED VERSION"
     andel_sjuk_verklig = data['disease'].mean()
+    
+    
     np.random.seed(42)
-    simulerad_data = np.random.binomial(n=1, p=andel_sjuk_verklig, size=1000)
-    andel_sjuk_simulerad = simulerad_data.mean()
-    return andel_sjuk_verklig, andel_sjuk_simulerad, simulerad_data
+    # Simulera 1000 personer med samma sannolikhet
+    simulerade_sjukdomar = np.random.choice([0, 1], 
+                                          size=1000, 
+                                          p=[1-andel_sjuk_verklig, andel_sjuk_verklig])
+    
+    andel_sjuk_simulerad = simulerade_sjukdomar.mean()
+    
+    print(f"Verklig andel sjuka: {andel_sjuk_verklig:.3f}")
+    print(f"Simulerad andel sjuka: {andel_sjuk_simulerad:.3f}")
+    print(f"Skillnad: {abs(andel_sjuk_verklig - andel_sjuk_simulerad):.3f}")
+    
+    return andel_sjuk_verklig, andel_sjuk_simulerad, simulerade_sjukdomar
+
 
 def konfidensintervall(data):
-    """Beräkna konfidensintervall för blodtryck"""
+    "Beräkna konfidensintervall för blodtryck"
     bp = data['systolic_bp']
     n = len(bp)
     medel = bp.mean()
@@ -95,8 +108,56 @@ def konfidensintervall(data):
     return medel, ci[0], ci[1]
 
 def hypotesprov(data):
-    """Testa hypotesen att rökare har högre blodtryck"""
+    """Testa hypotesen att rökare har högre blodtryck - IMPROVED VERSION"""
     rokare_bp = data[data['smoker'] == 'Yes']['systolic_bp']
     icke_rokare_bp = data[data['smoker'] == 'No']['systolic_bp']
+    
     t_stat, p_value = stats.ttest_ind(rokare_bp, icke_rokare_bp, equal_var=False)
-    return rokare_bp.mean(), icke_rokare_bp.mean(), p_value, t_stat
+    
+    
+    p_value_one_sided = p_value / 2 if t_stat > 0 else 1 - p_value/2
+    
+    print(f"Rökare medel BP: {rokare_bp.mean():.2f}")
+    print(f"Icke-rökare medel BP: {icke_rokare_bp.mean():.2f}")
+    print(f"Skillnad: {rokare_bp.mean() - icke_rokare_bp.mean():.2f}")
+    print(f"P-värde (enriktad): {p_value_one_sided:.4f}")
+    
+    if p_value_one_sided < 0.05:
+        print(" Signifikant skillnad - rökare har högre blodtryck")
+    else:
+        print(" Ingen signifikant skillnad")
+    
+    return rokare_bp.mean(), icke_rokare_bp.mean(), p_value_one_sided, t_stat
+
+
+def skapa_konfidensintervall_graf(data):
+    "Skapa graf för konfidensintervall"
+    
+    bp = data['systolic_bp']
+    n = len(bp)
+    medel = bp.mean()
+    std_err = stats.sem(bp)
+    ci_low, ci_high = stats.t.interval(0.95, df=n-1, loc=medel, scale=std_err)
+    
+    plt.figure(figsize=(10, 6))
+    plt.hist(data['systolic_bp'], bins=20, alpha=0.7, color='lightblue', edgecolor='black', density=True)
+    plt.axvline(medel, color='red', linestyle='--', linewidth=2, label=f'Medelvärde: {medel:.1f}')
+    plt.axvline(ci_low, color='orange', linestyle=':', linewidth=2, label=f'95% CI nedre: {ci_low:.1f}')
+    plt.axvline(ci_high, color='orange', linestyle=':', linewidth=2, label=f'95% CI övre: {ci_high:.1f}')
+    plt.xlabel('Systoliskt Blodtryck (mmHg)')
+    plt.ylabel('Densitet')
+    plt.title('Konfidensintervall för Systoliskt Blodtryck')
+    plt.legend()
+    plt.show()
+
+def skapa_hypotesgraf(data):
+    "Skapa graf för hypotesprövning"
+    rokare_bp = data[data['smoker'] == 'Yes']['systolic_bp']
+    icke_rokare_bp = data[data['smoker'] == 'No']['systolic_bp']
+    
+    plt.figure(figsize=(10, 6))
+    plt.boxplot([rokare_bp, icke_rokare_bp], labels=['Rökare', 'Icke-rökare'])
+    plt.ylabel('Systoliskt Blodtryck (mmHg)')
+    plt.title('Jämförelse av Blodtryck mellan Rökare och Icke-rökare')
+    plt.grid(True, alpha=0.3)
+    plt.show()
