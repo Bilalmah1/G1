@@ -47,7 +47,7 @@ def grundstatistik(data):
     return stats_df.round(2)
 
 def skapa_grafer(data):
-    "Skapa 4 olika grafer"
+    "Skapar 4 olika grafer"
     fig, axes = plt.subplots(2, 2, figsize=(15, 10))
     
     # 1. Histogram över blodtryck
@@ -108,7 +108,7 @@ def konfidensintervall(data):
     return medel, ci[0], ci[1]
 
 def hypotesprov(data):
-    """Testa hypotesen att rökare har högre blodtryck - IMPROVED VERSION"""
+    "Testa hypotesen att rökare har högre blodtryck - IMPROVED VERSION"
     rokare_bp = data[data['smoker'] == 'Yes']['systolic_bp']
     icke_rokare_bp = data[data['smoker'] == 'No']['systolic_bp']
     
@@ -123,15 +123,15 @@ def hypotesprov(data):
     print(f"P-värde (enriktad): {p_value_one_sided:.4f}")
     
     if p_value_one_sided < 0.05:
-        print(" Signifikant skillnad - rökare har högre blodtryck")
+        print(" Tydling skillnad - rökare har högre blodtryck")
     else:
-        print(" Ingen signifikant skillnad")
+        print(" Ingen stor skillnad")
     
     return rokare_bp.mean(), icke_rokare_bp.mean(), p_value_one_sided, t_stat
 
 
 def skapa_konfidensintervall_graf(data):
-    "Skapa graf för konfidensintervall"
+    "Skapar graf för konfidensintervall"
     
     bp = data['systolic_bp']
     n = len(bp)
@@ -151,7 +151,7 @@ def skapa_konfidensintervall_graf(data):
     plt.show()
 
 def skapa_hypotesgraf(data):
-    "Skapa graf för hypotesprövning"
+    "Skapar graf för hypotesprövning"
     rokare_bp = data[data['smoker'] == 'Yes']['systolic_bp']
     icke_rokare_bp = data[data['smoker'] == 'No']['systolic_bp']
     
