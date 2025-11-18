@@ -45,3 +45,11 @@ class HealthAnalyzer:
         plt.ylabel("PC2")
         plt.title("PCA – mönster i hälsodata")
         plt.show()
+
+    def sjukdom_per_koen(self):
+         "Visa andel sjuka per kön."
+         mean_values = self.data.groupby("sex")["disease"].mean()
+         mean_values.plot(kind="bar", color=["lightblue", "salmon"])
+         plt.ylabel("Andel sjuka")
+         plt.title("Sjukdomsförekomst per kön")
+         plt.show()
