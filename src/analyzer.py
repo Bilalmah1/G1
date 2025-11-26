@@ -8,7 +8,7 @@ class HealthAnalyzer:
     "Klass för att utföra fördjupad analys på hälsodata."
 
     def __init__(self, data: pd.DataFrame):
-        "Initierar objektet med en DataFrame."
+        
         self.data = data
 
     def regression_bp(self):
