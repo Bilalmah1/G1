@@ -20,7 +20,7 @@ class HealthAnalyzer:
         model.fit(X, y)
         self.model = model
 
-        print("Regression klar!")
+        print("Regression Genomförd!")
         print(f"Intercept: {model.intercept_:.2f}")
         print(f"Koefficienter: {dict(zip(X.columns, model.coef_.round(2)))}")
         return model
@@ -47,7 +47,7 @@ class HealthAnalyzer:
         plt.show()
 
     def sjukdom_per_koen(self):
-         "Visa andel sjuka per kön."
+         "Visar andel sjuka per kön."
          mean_values = self.data.groupby("sex")["disease"].mean()
          mean_values.plot(kind="bar", color=["lightblue", "salmon"])
          plt.ylabel("Andel sjuka")
